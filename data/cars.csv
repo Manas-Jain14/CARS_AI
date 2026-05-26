@@ -1,0 +1,41 @@
+make,model,year,price_usd,mileage_city,mileage_highway,engine,fuel_type,transmission,seating,horsepower,drive_type,safety_rating,features,body_type
+Toyota,Corolla,2024,21500,31,40,1.8L 4-cylinder,Gasoline,CVT,5,138,FWD,5,Lane Assist;Adaptive Cruise;Apple CarPlay,Sedan
+Honda,Civic,2024,24000,33,42,2.0L 4-cylinder,Gasoline,CVT,5,158,FWD,5,Lane Keep Assist;Wireless Charging;Heads-up Display,Sedan
+Mazda,CX-5,2024,32000,24,30,2.5L 4-cylinder,Gasoline,Automatic,5,187,AWD,5,Blind Spot Monitoring;Premium Audio;Heated Seats,SUV
+Tesla,Model 3,2024,43000,138,128,Electric,Electric,Single-speed,5,283,AWD,5,Autopilot;Over-the-air Updates;Glass Roof,Sedan
+Ford,F-150,2024,47000,19,24,3.5L V6,Gasoline,10-speed Automatic,5,400,AWD,5,Tow Package;Pro Power Onboard;Crew Cab,Truck
+Hyundai,Elantra,2024,20500,33,43,2.0L 4-cylinder,Gasoline,CVT,5,147,FWD,5,Forward Collision Avoidance;Wireless Apple CarPlay,Sedan
+BMW,3 Series,2024,45000,25,34,2.0L Turbo 4-cylinder,Gasoline,8-speed Automatic,5,255,RWD,5,Navigation;Leather Seats;Active Cruise Control,Sedan
+Kia,Sportage,2024,28000,26,33,2.5L 4-cylinder,Gasoline,8-speed Automatic,5,187,FWD,5,Android Auto;Driver Attention Warning;Panoramic Roof,SUV
+Chevrolet,Blazer,2024,36000,22,29,2.0L Turbo 4-cylinder,Gasoline,9-speed Automatic,5,228,AWD,5,Wireless Charging;10-inch Touchscreen;Safety Alert Seat,SUV
+Toyota,RAV4,2024,30000,27,35,2.5L 4-cylinder,Gasoline,8-speed Automatic,5,203,AWD,5,All-Wheel Drive;Smart Key System;Pre-Collision,SUV
+Nissan,Altima,2024,27000,27,39,2.5L 4-cylinder,Gasoline,CVT,5,188,FWD,5,Remote Start;Blind Spot Warning;Apple CarPlay,Sedan
+Volkswagen,Tiguan,2024,31000,23,30,2.0L Turbo 4-cylinder,Gasoline,8-speed Automatic,7,184,AWD,5,Digital Cockpit;Adaptive Cruise;Third Row,SUV
+Subaru,Outback,2024,34000,26,32,2.5L BOXER 4-cylinder,Gasoline,CVT,5,182,AWD,5,X-Mode AWD;EyeSight Safety;Roof Rails,Wagon
+Jeep,Wrangler,2024,42000,17,23,3.6L V6,Gasoline,8-speed Automatic,5,285,4WD,4,Removable Roof;Off-road Tires;Trail Assist,SUV
+Audi,A4,2024,46000,26,35,2.0L Turbo 4-cylinder,Gasoline,7-speed Automatic,5,261,AWD,5,Virtual Cockpit;Leather Interior;Ambient Lighting,Sedan
+Mercedes-Benz,C-Class,2024,48000,25,36,2.0L Turbo 4-cylinder,Gasoline,9-speed Automatic,5,255,RWD,5,MBUX System;Panoramic Sunroof;Memory Seats,Sedan
+Lexus,RX 350,2024,52000,22,29,2.4L Turbo 4-cylinder,Gasoline,8-speed Automatic,5,275,AWD,5,Mark Levinson Audio;Power Tailgate;Ventilated Seats,SUV
+Porsche,Cayenne,2024,85000,17,23,3.0L Turbo V6,Gasoline,8-speed Automatic,5,348,AWD,5,Sport Chrono;Air Suspension;Premium Interior,SUV
+Volvo,XC90,2024,61000,23,30,2.0L Turbo Hybrid,Hybrid,8-speed Automatic,7,295,AWD,5,Pilot Assist;Bowers Audio;360 Camera,SUV
+Acura,TLX,2024,45000,22,31,2.0L Turbo 4-cylinder,Gasoline,10-speed Automatic,5,272,AWD,5,ELS Studio Audio;Adaptive Damper;HUD,Sedan
+Genesis,G70,2024,44000,21,29,2.5L Turbo 4-cylinder,Gasoline,8-speed Automatic,5,300,RWD,5,Lexicon Audio;Wireless Charging;Smart Cruise,Sedan
+Ram,1500,2024,50000,18,25,5.7L V8,Gasoline,8-speed Automatic,5,395,4WD,5,RamBox Storage;Air Suspension;Tow Assist,Truck
+GMC,Sierra 1500,2024,53000,19,24,5.3L V8,Gasoline,10-speed Automatic,5,355,4WD,5,MultiPro Tailgate;Bose Audio;Trailering Package,Truck
+Toyota,Camry,2024,26000,32,41,2.5L 4-cylinder,Gasoline,8-speed Automatic,5,203,FWD,5,Toyota Safety Sense;Wireless Charging;Blind Spot Monitor,Sedan
+Honda,CR-V,2024,31000,28,34,1.5L Turbo 4-cylinder,Gasoline,CVT,5,190,AWD,5,Rear Cross Traffic Alert;Power Liftgate;Heated Steering,SUV
+Ford,Explorer,2024,41000,21,28,2.3L Turbo 4-cylinder,Gasoline,10-speed Automatic,7,300,RWD,5,Ford Co-Pilot360;Third Row;Terrain Management,SUV
+Chevrolet,Tahoe,2024,59000,15,20,5.3L V8,Gasoline,10-speed Automatic,8,355,4WD,5,Magnetic Ride;Bose Speakers;Large Cargo,SUV
+Hyundai,Tucson,2024,29000,25,32,2.5L 4-cylinder,Gasoline,8-speed Automatic,5,187,AWD,5,Blind View Monitor;Digital Key;Wireless Charging,SUV
+Kia,Telluride,2024,43000,20,26,3.8L V6,Gasoline,8-speed Automatic,8,291,AWD,5,Dual Sunroof;Harman Kardon Audio;Safe Exit Assist,SUV
+Subaru,Forester,2024,30000,26,33,2.5L BOXER 4-cylinder,Gasoline,CVT,5,182,AWD,5,Symmetrical AWD;EyeSight Driver Assist;X-Mode,SUV
+Mahindra,XEV 9e,2026,32000,0,0,Electric,Electric,Single-speed,5,282,AWD,5,ADAS Level 2;Panoramic Display;Fast Charging,SUV
+Mahindra,BE 6,2026,28000,0,0,Electric,Electric,Single-speed,5,228,RWD,5,Connected Car Tech;Wireless Charging;Drive Modes,SUV
+Tata,Curvv EV,2026,26000,0,0,Electric,Electric,Single-speed,5,167,FWD,5,360 Camera;Touchscreen Infotainment;Fast Charging,SUV Coupe
+Tata,Sierra EV,2026,35000,0,0,Electric,Electric,Single-speed,5,241,AWD,5,Panoramic Sunroof;Level 2 ADAS;Connected Features,SUV
+Maruti Suzuki,eVitara,2026,27000,0,0,Electric,Electric,Single-speed,5,181,FWD,5,500km Range;Connected Tech;Fast Charging,SUV
+Hyundai,Creta EV,2026,29000,0,0,Electric,Electric,Single-speed,5,200,FWD,5,Digital Cluster;ADAS;Wireless Charging,SUV
+Kia,New Seltos Hybrid,2026,31000,18,24,1.6L Hybrid,Hybrid,Automatic,5,180,FWD,5,Hybrid Drive;Panoramic Sunroof;Level 2 ADAS,SUV
+Toyota,Fortuner Hybrid,2026,52000,14,18,2.8L Hybrid Diesel,Hybrid,Automatic,7,240,4WD,5,Hybrid Assist;Terrain Modes;Toyota Safety Sense,SUV
+Honda,City Facelift,2026,18000,21,27,1.5L Hybrid,Hybrid,e-CVT,5,121,FWD,5,Honda Sensing;Wireless Android Auto;Lane Watch,Sedan
+Renault,New Duster,2026,22000,18,23,1.3L Turbo,Gasoline,Automatic,5,154,AWD,5,Digital Cluster;Terrain Modes;360 Camera,SUV
