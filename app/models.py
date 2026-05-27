@@ -1,6 +1,6 @@
 from __future__ import annotations
-from typing import List, Optional
-from pydantic import BaseModel, Field, computed_field, root_validator, validator
+from typing import Any, List, Optional
+from pydantic import BaseModel, Field, computed_field, field_validator, model_validator
 
 USD_TO_INR = 95.0
 
@@ -47,32 +47,57 @@ class CarSpec(BaseModel):
     def price_inr(self) -> int:
         return int(round(self.price_usd * USD_TO_INR))
 
-    @validator("features", pre=True)
+    @field_validator("features", mode="before")
+    @classmethod
     def split_features(cls, value):
         if isinstance(value, str):
             return [item.strip() for item in value.split(";") if item.strip()]
         return value or []
 
-    @validator("year", "price_usd", "mileage_city", "mileage_highway", "seating", "horsepower", pre=True)
+    @field_validator("year", "price_usd", "mileage_city", "mileage_highway", "seating", "horsepower", mode="before")
+    @classmethod
     def normalize_ints(cls, value):
         return parse_int(value)
 
-    @validator("safety_rating", pre=True)
+    @field_validator("safety_rating", mode="before")
+    @classmethod
     def normalize_float(cls, value):
         return parse_float(value)
 
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def normalize_fields(cls, values):
-        values["make"] = str(values.get("make", "")).strip()
-        values["model"] = str(values.get("model", "")).strip()
+        if isinstance(values, dict):
+            values["make"] = str(values.get("make", "")).strip()
+            values["model"] = str(values.get("model", "")).strip()
         return values
 
     def display_name(self) -> str:
         return f"{self.year} {self.make} {self.model}"
 
 
+class ChatMessage(BaseModel):
+    role: str = Field(..., description="The role of the message sender (user or assistant).")
+    content: Any = Field(..., description="The content of the message. Can be a string or a list of parts from Gradio.")
+
+    @field_validator("content", mode="before")
+    @classmethod
+    def normalize_content(cls, v):
+        if isinstance(v, list):
+            # Extract text from Gradio's complex message format if needed
+            parts = []
+            for part in v:
+                if isinstance(part, dict) and "text" in part:
+                    parts.append(part["text"])
+                elif isinstance(part, str):
+                    parts.append(part)
+            return "\n".join(parts) if parts else str(v)
+        return str(v) if v is not None else ""
+
+
 class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, description="User chat message for the car assistant.")
+    history: List[ChatMessage] = Field(default_factory=list, description="Previous conversation history.")
 
 
 class AgentResponse(BaseModel):

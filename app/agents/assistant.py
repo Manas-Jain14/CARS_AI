@@ -1,8 +1,8 @@
-from __future__ import annotations
-from typing import List
+from typing import List, Optional
 from pydantic_ai import Agent, RunContext
+from pydantic_ai.messages import ModelMessage, ModelRequest, ModelResponse, TextPart, UserPromptPart
 from app.config import GEMINI_MODEL, logger
-from app.models import AgentResponse, CarSpec
+from app.models import AgentResponse, CarSpec, ChatMessage
 from app.services.car_data import car_data_service
 
 SYSTEM_PROMPT = (
@@ -19,7 +19,6 @@ SYSTEM_PROMPT = (
 agent = Agent(
     GEMINI_MODEL,
     system_prompt=SYSTEM_PROMPT,
-    output_type=AgentResponse,
     tool_timeout=12,
     metadata={"assistant": "AI Car Assistant"},
 )
@@ -89,10 +88,39 @@ def _format_tool_error(error: Exception) -> AgentResponse:
     )
 
 
-def run_assistant(user_message: str) -> AgentResponse:
+async def run_assistant_stream(user_message: str, history: Optional[List[ChatMessage]] = None):
+    try:
+        logger.info("Assistant streaming received message: %s", user_message)
+
+        model_messages: List[ModelMessage] = []
+        if history:
+            for msg in history:
+                if msg.role == "user":
+                    model_messages.append(ModelRequest(parts=[UserPromptPart(content=msg.content)]))
+                elif msg.role == "assistant":
+                    model_messages.append(ModelResponse(parts=[TextPart(content=msg.content)]))
+
+        async with agent.run_stream(user_message, message_history=model_messages) as result:
+            async for message in result.stream_text(delta=True):
+                yield message
+    except Exception as error:
+        logger.exception("Assistant streaming error")
+        yield _format_tool_error(error).answer
+
+
+def run_assistant(user_message: str, history: Optional[List[ChatMessage]] = None) -> AgentResponse:
     try:
         logger.info("Assistant received message: %s", user_message)
-        result = agent.run_sync(user_message)
+
+        model_messages: List[ModelMessage] = []
+        if history:
+            for msg in history:
+                if msg.role == "user":
+                    model_messages.append(ModelRequest(parts=[UserPromptPart(content=msg.content)]))
+                elif msg.role == "assistant":
+                    model_messages.append(ModelResponse(parts=[TextPart(content=msg.content)]))
+
+        result = agent.run_sync(user_message, message_history=model_messages)
         output = getattr(result, "output", None) or getattr(result, "data", None)
         if isinstance(output, AgentResponse):
             return output

@@ -30,7 +30,7 @@ class CarDataService:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 try:
-                    car = CarSpec(**row)
+                    car = CarSpec.model_validate(row)
                     cars.append(car)
                 except Exception as exc:
                     logger.warning("Skipping invalid row in CSV: %s (%s)", row, exc)
@@ -119,7 +119,24 @@ class CarDataService:
             candidates = [car for car in candidates if car.price_usd <= budget_usd]
         if use_case:
             phrase = normalize_text(use_case)
-            candidates = [car for car in candidates if phrase in normalize_text(" ".join([car.body_type or "", car.features and " ".join(car.features), car.engine, car.fuel_type]))]
+            candidates = [
+                car
+                for car in candidates
+                if phrase
+                in normalize_text(
+                    " ".join(
+                        filter(
+                            None,
+                            [
+                                car.body_type or "",
+                                " ".join(car.features),
+                                car.engine,
+                                car.fuel_type,
+                            ],
+                        )
+                    )
+                )
+            ]
         if not candidates:
             candidates = self._cars
         ranked = sorted(candidates, key=lambda car: (abs((budget_usd or car.price_usd) - car.price_usd), car.price_usd))

@@ -1,5 +1,6 @@
 import gradio as gr
-from app.agents.assistant import run_assistant
+from app.agents.assistant import run_assistant_stream
+from app.models import ChatMessage
 
 
 def _format_chat_history(history: list[dict[str, str]] | None, user_message: str) -> list[dict[str, str]]:
@@ -9,15 +10,31 @@ def _format_chat_history(history: list[dict[str, str]] | None, user_message: str
     return history
 
 
-def process_message(history: list[dict[str, str]] | None, user_message: str) -> tuple[list[dict[str, str]], str]:
+async def process_message(history: list[dict[str, str]] | None, user_message: str):
     if not user_message.strip():
-        return history or [], ""
+        yield history or [], ""
+        return
 
+    # Prepare context for the assistant (history before the current message)
+    chat_history = [ChatMessage(role=m["role"], content=m["content"]) for m in (history or [])]
+
+    # Add user message to UI history
     history = _format_chat_history(history, user_message)
-    response = run_assistant(user_message)
-    history.append({"role": "assistant", "content": response.answer})
 
-    return history, ""
+    # Initialize assistant response in UI
+    history.append({"role": "assistant", "content": ""})
+    yield history, ""
+
+    # Stream real chunks from the assistant
+    full_response = ""
+    async for chunk in run_assistant_stream(user_message, history=chat_history):
+        full_response += chunk
+        history[-1]["content"] = full_response
+        yield history, ""
+
+    # Ensure the final state is yielded
+    history[-1]["content"] = full_response
+    yield history, ""
 
 
 def create_gradio_app() -> gr.Blocks:
@@ -40,5 +57,13 @@ def create_gradio_app() -> gr.Blocks:
             inputs=[chatbot, user_input],
             outputs=[chatbot, user_input],
         )
+        
+        # Required for streaming and async functions
+        demo.queue()
 
     return demo
+
+
+if __name__ == "__main__":
+    demo = create_gradio_app()
+    demo.launch(share=True)
