@@ -7,8 +7,8 @@ router = APIRouter()
 
 
 @router.post("/assistant/chat", response_model=AgentResponse)
-def assistant_chat(request: ChatRequest) -> AgentResponse:
-    return run_assistant(request.message, history=request.history)
+async def assistant_chat(request: ChatRequest) -> AgentResponse:
+    return await run_assistant(request.message, history=request.history)
 
 
 @router.get("/cars", response_model=list[CarSpec])

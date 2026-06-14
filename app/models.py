@@ -1,8 +1,7 @@
 from __future__ import annotations
 from typing import Any, List, Optional
 from pydantic import BaseModel, Field, computed_field, field_validator, model_validator
-
-USD_TO_INR = 95.0
+from app.config import USD_TO_INR
 
 
 def parse_int(value: Optional[str] | int) -> int | None:
@@ -38,7 +37,7 @@ class CarSpec(BaseModel):
     transmission: str
     seating: int
     horsepower: Optional[int] = None
-    drive_type: str = Field(alias="drive_type")
+    drive_type: str
     safety_rating: Optional[float] = None
     features: List[str] = Field(default_factory=list)
     body_type: Optional[str] = None

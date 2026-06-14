@@ -20,6 +20,8 @@ GEMINI_MODEL = (
     or "google:gemini-3.1-flash-lite"
 )
 
+USD_TO_INR = 95.0
+
 LOG_FORMAT = "[%(asctime)s] %(levelname)s %(name)s: %(message)s"
 logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 logger = logging.getLogger("auto_mate")

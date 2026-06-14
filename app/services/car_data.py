@@ -41,10 +41,7 @@ class CarDataService:
 
     def _find_exact(self, query: str) -> CarSpec | None:
         normalized = normalize_text(query)
-        if normalized in self._index:
-            return self._index[normalized]
-        matches = [car for key, car in self._index.items() if normalized == key]
-        return matches[0] if matches else None
+        return self._index.get(normalized)
 
     def _find_closest_match(self, query: str, threshold: float = 0.55) -> CarSpec | None:
         normalized_query = normalize_text(query)
@@ -61,6 +58,7 @@ class CarDataService:
         return None
 
     def search_cars(self, query: str, limit: int = 5) -> List[CarSpec]:
+        logger.info("Tool search_cars called with query: '%s'", query)
         if not query:
             return self._cars[:limit]
 
@@ -93,6 +91,7 @@ class CarDataService:
         return results[:limit]
 
     def get_car_specs(self, car_name: str) -> CarSpec | None:
+        logger.info("Tool get_car_specs called for: '%s'", car_name)
         car = self._find_exact(car_name)
         if car:
             return car
@@ -100,6 +99,7 @@ class CarDataService:
         return results[0] if results else None
 
     def compare_cars(self, car_a: str, car_b: str) -> dict[str, object]:
+        logger.info("Tool compare_cars called for: '%s' and '%s'", car_a, car_b)
         first = self.get_car_specs(car_a)
         second = self.get_car_specs(car_b)
         if not first or not second:
@@ -114,6 +114,7 @@ class CarDataService:
         return comparison
 
     def recommend_cars(self, budget_usd: float | None = None, use_case: str | None = None, limit: int = 3) -> List[CarSpec]:
+        logger.info("Tool recommend_cars called with budget: %s, use_case: '%s'", budget_usd, use_case)
         candidates = self._cars
         if budget_usd is not None:
             candidates = [car for car in candidates if car.price_usd <= budget_usd]

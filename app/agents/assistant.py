@@ -6,14 +6,14 @@ from app.models import AgentResponse, CarSpec, ChatMessage
 from app.services.car_data import car_data_service
 
 SYSTEM_PROMPT = (
-    "You are AutoMate, a professional automotive assistant for buyers. "
-    "Always answer with verified car data from the CSV database. "
-    "Do not invent specifications, prices, or features. "
+    "You are AutoMate, an authoritative automotive assistant. "
+    "Your primary goal is to answer user questions using verified car data from the provided CSV database. "
+    "You have access to tools that search and lookup car specifications, compare models, and provide recommendations. "
+    "CRITICAL: For EVERY question about specific cars, comparisons, or buyer advice, you MUST use the appropriate database tools. "
+    "Do not rely on your internal knowledge for car specifications, prices, or features. "
     "When presenting prices, always show the amount in Indian Rupees (INR) first, using 1 USD = 95 INR. "
     "You may optionally include the USD equivalent in parentheses, but INR must appear as the primary currency. "
-    "If the user asks about a car or comparison, use the database tools and return a concise, professional answer. "
-    "Where appropriate, provide pros and cons, clear recommendations, and budget-aware advice. "
-    "When data is unavailable, admit the limit and offer the closest factual guidance."
+    "If the database does not contain a specific car, clearly state that it is not in the database and offer to help with one of the available models."
 )
 
 agent = Agent(
@@ -68,6 +68,16 @@ def recommend_cars(
 
 def _format_tool_error(error: Exception) -> AgentResponse:
     message = str(error)
+    if "429" in message or "RESOURCE_EXHAUSTED" in message or "quota" in message.lower():
+        return AgentResponse(
+            answer=(
+                "I'm sorry, but the AI service is currently overloaded or the API quota has been reached. "
+                "Please wait a moment and try your request again."
+            ),
+            source="internal",
+            tool_used=False,
+        )
+
     if isinstance(error, ValueError) and "No car matching" in message:
         return AgentResponse(
             answer=(
@@ -108,7 +118,7 @@ async def run_assistant_stream(user_message: str, history: Optional[List[ChatMes
         yield _format_tool_error(error).answer
 
 
-def run_assistant(user_message: str, history: Optional[List[ChatMessage]] = None) -> AgentResponse:
+async def run_assistant(user_message: str, history: Optional[List[ChatMessage]] = None) -> AgentResponse:
     try:
         logger.info("Assistant received message: %s", user_message)
 
@@ -120,11 +130,8 @@ def run_assistant(user_message: str, history: Optional[List[ChatMessage]] = None
                 elif msg.role == "assistant":
                     model_messages.append(ModelResponse(parts=[TextPart(content=msg.content)]))
 
-        result = agent.run_sync(user_message, message_history=model_messages)
-        output = getattr(result, "output", None) or getattr(result, "data", None)
-        if isinstance(output, AgentResponse):
-            return output
-        return AgentResponse(answer=str(output), source="database", tool_used=True)
+        result = await agent.run(user_message, message_history=model_messages)
+        return AgentResponse(answer=str(result.output), source="database", tool_used=True)
     except Exception as error:
         logger.exception("Assistant error")
         return _format_tool_error(error)
