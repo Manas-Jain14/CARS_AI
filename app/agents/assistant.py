@@ -16,7 +16,13 @@ SYSTEM_PROMPT = (
     "Cars in the database also carry an off-road capability flag and a budget category (e.g. 'Under 10 Lakh'). "
     "When a user asks about off-roading, rugged use, or SUV-like ruggedness, filter recommendations to off-road capable cars. "
     "When a user asks about a specific budget range or budget bracket, filter recommendations using the budget category field. "
-    "If the database does not contain a specific car, clearly state that it is not in the database and offer to help with one of the available models."
+    "If the database does not contain a specific car, clearly state that it is not in the database and offer to help with one of the available models. "
+    "If the recommend_cars tool returns an empty list, this means NO car in the database matches the exact combination of "
+    "filters requested (e.g. off-road capability plus a body type or budget that no car satisfies together). "
+    "In that case, clearly tell the user that no car matched their exact criteria — do not substitute or present unrelated "
+    "cars as if they matched. You may explicitly offer to relax one specific filter and re-run the search "
+    "(e.g. 'No off-road capable hatchbacks were found — would you like me to check off-road capable SUVs instead, "
+    "or hatchbacks without the off-road requirement?'), but only as an explicit, clearly-labeled offer, never silently."
 )
 
 agent = Agent(
@@ -62,7 +68,11 @@ def compare_cars(ctx: RunContext, car_a: str, car_b: str) -> dict[str, object]:
         "Recommend cars from the CSV database based on the customer budget, use case, "
         "off-road capability, and budget category. Set off_road_only=True when the user wants "
         "off-road or rugged-terrain capable cars. Set budget_category to a value like "
-        "'Under 10 Lakh' when the user asks about a specific budget bracket."
+        "'Under 10 Lakh' when the user asks about a specific budget bracket. "
+        "Returns only cars that satisfy ALL of the given filters together — if no car in the "
+        "database matches every filter, this returns an EMPTY LIST rather than substitute cars. "
+        "An empty list means no match was found; tell the user this explicitly instead of "
+        "presenting other cars as if they matched."
     )
 )
 def recommend_cars(

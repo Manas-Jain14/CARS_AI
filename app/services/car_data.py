@@ -156,8 +156,6 @@ class CarDataService:
                     )
                 )
             ]
-        if not candidates:
-            candidates = self._cars
         ranked = sorted(candidates, key=lambda car: (abs((budget_usd or car.price_usd) - car.price_usd), car.price_usd))
         return ranked[:limit]
 
