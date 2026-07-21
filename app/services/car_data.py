@@ -113,11 +113,29 @@ class CarDataService:
         }
         return comparison
 
-    def recommend_cars(self, budget_usd: float | None = None, use_case: str | None = None, limit: int = 3) -> List[CarSpec]:
-        logger.info("Tool recommend_cars called with budget: %s, use_case: '%s'", budget_usd, use_case)
+    def recommend_cars(
+        self,
+        budget_usd: float | None = None,
+        use_case: str | None = None,
+        off_road_only: bool = False,
+        budget_category: str | None = None,
+        limit: int = 3,
+    ) -> List[CarSpec]:
+        logger.info(
+            "Tool recommend_cars called with budget: %s, use_case: '%s', off_road_only: %s, budget_category: '%s'",
+            budget_usd, use_case, off_road_only, budget_category,
+        )
         candidates = self._cars
         if budget_usd is not None:
             candidates = [car for car in candidates if car.price_usd <= budget_usd]
+        if off_road_only:
+            candidates = [car for car in candidates if car.off_road_capable]
+        if budget_category:
+            normalized_category = normalize_text(budget_category)
+            candidates = [
+                car for car in candidates
+                if car.budget_category and normalize_text(car.budget_category) == normalized_category
+            ]
         if use_case:
             phrase = normalize_text(use_case)
             candidates = [

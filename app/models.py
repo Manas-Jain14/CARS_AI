@@ -30,8 +30,8 @@ class CarSpec(BaseModel):
     model: str
     year: int
     price_usd: int
-    mileage_city: Optional[int] = None
-    mileage_highway: Optional[int] = None
+    mileage_city: Optional[float] = None
+    mileage_highway: Optional[float] = None
     engine: str
     fuel_type: str
     transmission: str
@@ -41,6 +41,8 @@ class CarSpec(BaseModel):
     safety_rating: Optional[float] = None
     features: List[str] = Field(default_factory=list)
     body_type: Optional[str] = None
+    off_road_capable: bool = False
+    budget_category: Optional[str] = None
 
     @computed_field
     def price_inr(self) -> int:
@@ -53,12 +55,19 @@ class CarSpec(BaseModel):
             return [item.strip() for item in value.split(";") if item.strip()]
         return value or []
 
-    @field_validator("year", "price_usd", "mileage_city", "mileage_highway", "seating", "horsepower", mode="before")
+    @field_validator("off_road_capable", mode="before")
+    @classmethod
+    def normalize_off_road_capable(cls, value):
+        if isinstance(value, str):
+            return value.strip().lower() in {"yes", "true", "1"}
+        return bool(value)
+
+    @field_validator("year", "price_usd", "seating", "horsepower", mode="before")
     @classmethod
     def normalize_ints(cls, value):
         return parse_int(value)
 
-    @field_validator("safety_rating", mode="before")
+    @field_validator("safety_rating", "mileage_city", "mileage_highway", mode="before")
     @classmethod
     def normalize_float(cls, value):
         return parse_float(value)

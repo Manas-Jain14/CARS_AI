@@ -13,6 +13,9 @@ SYSTEM_PROMPT = (
     "Do not rely on your internal knowledge for car specifications, prices, or features. "
     "When presenting prices, always show the amount in Indian Rupees (INR) first, using 1 USD = 95 INR. "
     "You may optionally include the USD equivalent in parentheses, but INR must appear as the primary currency. "
+    "Cars in the database also carry an off-road capability flag and a budget category (e.g. 'Under 10 Lakh'). "
+    "When a user asks about off-roading, rugged use, or SUV-like ruggedness, filter recommendations to off-road capable cars. "
+    "When a user asks about a specific budget range or budget bracket, filter recommendations using the budget category field. "
     "If the database does not contain a specific car, clearly state that it is not in the database and offer to help with one of the available models."
 )
 
@@ -55,15 +58,28 @@ def compare_cars(ctx: RunContext, car_a: str, car_b: str) -> dict[str, object]:
 
 
 @agent.tool(
-    description="Recommend cars from the CSV database based on the customer budget and use case."
+    description=(
+        "Recommend cars from the CSV database based on the customer budget, use case, "
+        "off-road capability, and budget category. Set off_road_only=True when the user wants "
+        "off-road or rugged-terrain capable cars. Set budget_category to a value like "
+        "'Under 10 Lakh' when the user asks about a specific budget bracket."
+    )
 )
 def recommend_cars(
     ctx: RunContext,
     budget_usd: float | None = None,
     use_case: str | None = None,
+    off_road_only: bool = False,
+    budget_category: str | None = None,
     limit: int = 3,
 ) -> List[CarSpec]:
-    return car_data_service.recommend_cars(budget_usd=budget_usd, use_case=use_case, limit=limit)
+    return car_data_service.recommend_cars(
+        budget_usd=budget_usd,
+        use_case=use_case,
+        off_road_only=off_road_only,
+        budget_category=budget_category,
+        limit=limit,
+    )
 
 
 def _format_tool_error(error: Exception) -> AgentResponse:
