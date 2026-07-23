@@ -26,7 +26,7 @@ app.include_router(router, prefix="/api")
 # Create the Gradio demo and launch it with sharing enabled
 # This generates the public URL while allowing it to be mounted to FastAPI
 demo = create_gradio_app()
-demo.launch(share=True, prevent_thread_lock=True)
+
 
 app = gr.mount_gradio_app(app, demo, path="/chat")
 
